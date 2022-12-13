@@ -12,8 +12,14 @@
         haskellPackages = pkgs.haskellPackages;
       in
       {
-        devShell = pkgs.mkShell {
-          packages = [ (haskellPackages.ghcWithPackages (p: [ p.wai-app-static ])) ];
+        apps.default = {
+          type = "app";
+          program = "${pkgs.writeShellScript "run server" ''
+            ${haskellPackages.ghcWithPackages (p: [ p.wai-app-static ])}/bin/ghc -e \
+              'putStrLn "Server starting..." >>
+                Network.Wai.Handler.Warp.run 8000 (Network.Wai.Application.Static.staticApp
+                  (Network.Wai.Application.Static.defaultFileServerSettings "."))'
+          ''}";
         };
       }
     );

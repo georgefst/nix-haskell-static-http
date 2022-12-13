@@ -10,14 +10,15 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         haskellPackages = pkgs.haskellPackages;
+        port = "8000";
       in
       {
         apps.default = {
           type = "app";
           program = "${pkgs.writeShellScript "run server" ''
             ${haskellPackages.ghcWithPackages (p: [ p.wai-app-static ])}/bin/ghc -e \
-              'putStrLn "Server starting..." >>
-                Network.Wai.Handler.Warp.run 8000 (Network.Wai.Application.Static.staticApp
+              'putStrLn "Server starting on port ${port}..." >>
+                Network.Wai.Handler.Warp.run ${port} (Network.Wai.Application.Static.staticApp
                   (Network.Wai.Application.Static.defaultFileServerSettings "."))'
           ''}";
         };

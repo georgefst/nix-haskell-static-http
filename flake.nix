@@ -15,10 +15,8 @@
         apps.default = {
           type = "app";
           program = "${pkgs.writeShellScript "run server" ''
-            ${pkgs.haskellPackages.ghcWithPackages (p: [ p.wai-app-static ])}/bin/ghc -e \
-              'putStrLn "Server starting on port ${port}..." >>
-                Network.Wai.Handler.Warp.run ${port} (Network.Wai.Application.Static.staticApp
-                  (Network.Wai.Application.Static.defaultFileServerSettings "."))'
+            ${pkgs.haskellPackages.ghcWithPackages (p: [ p.lifx-lan ])}/bin/ghc -e \
+              'print =<< Lifx.Lan.runLifx (Lifx.Lan.discoverDevices Nothing)'
           ''}";
         };
       }
